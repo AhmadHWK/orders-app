@@ -7,11 +7,32 @@ import '/Cubits/auth_cubit/auth_cubit.dart';
 import '../Constant/colors.dart';
 import '../Widgets/custom_inputfield.dart';
 
-class SignInPage extends StatelessWidget {
-  TextEditingController userName = TextEditingController();
-  TextEditingController passWord = TextEditingController();
-  GlobalKey<FormState> signinKey = GlobalKey();
-  SignInPage({super.key});
+class SignInPage extends StatefulWidget {
+  const SignInPage({super.key});
+
+  @override
+  State<SignInPage> createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  TextEditingController? userName;
+  TextEditingController? passWord;
+  GlobalKey<FormState>? signinKey;
+  @override
+  void initState() {
+    userName = TextEditingController();
+    passWord = TextEditingController();
+    signinKey = GlobalKey();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    userName?.dispose();
+    passWord?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(

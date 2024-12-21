@@ -7,11 +7,36 @@ import '/Cubits/auth_cubit/auth_cubit.dart';
 
 import '../Widgets/custom_inputfield.dart';
 
-class SignupPage extends StatelessWidget {
-  TextEditingController userName = TextEditingController();
-  TextEditingController passWord = TextEditingController();
-  GlobalKey<FormState> signUpKey = GlobalKey();
-  SignupPage({super.key});
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
+
+  @override
+  State<SignupPage> createState() => _SignupPageState();
+}
+
+class _SignupPageState extends State<SignupPage> {
+  TextEditingController? userName;
+
+  TextEditingController? passWord;
+  TextEditingController? phoneNum;
+
+  GlobalKey<FormState>? signUpKey;
+  @override
+  void initState() {
+    userName = TextEditingController();
+    passWord = TextEditingController();
+    phoneNum = TextEditingController();
+    signUpKey = GlobalKey();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    userName?.dispose();
+    passWord?.dispose();
+    phoneNum?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +85,13 @@ class SignupPage extends StatelessWidget {
                           controller: userName,
                           hintText: AppStrings.userName,
                           icon: const Icon(Icons.person),
+                          suffixIcon: true,
+                        ),
+                        CustomInputField(
+                          primaryColor: AppColors.primaryColor,
+                          controller: phoneNum,
+                          hintText: AppStrings.phoneNum,
+                          icon: const Icon(Icons.phone),
                           suffixIcon: true,
                         ),
                         CustomInputField(
