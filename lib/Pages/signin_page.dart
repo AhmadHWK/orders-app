@@ -53,72 +53,94 @@ class _SignInPageState extends State<SignInPage> {
       builder: (context, state) {
         return Scaffold(
           body: SingleChildScrollView(
-            child: Column(
-              children: [
-                SvgPicture.asset(''),
-                const Text(
-                  AppStrings.signIn,
-                  style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.primaryColor,
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 60),
-                  child: Form(
-                    key: signinKey,
-                    child: Column(
-                      spacing: 10,
-                      children: [
-                        CustomInputField(
-                          primaryColor: AppColors.primaryColor,
-                          controller: userName,
-                          hintText: AppStrings.userName,
-                          icon: const Icon(Icons.person),
-                          suffixIcon: true,
-                          validator: true,
-                        ),
-                        CustomInputField(
-                          primaryColor: AppColors.primaryColor,
-                          controller: passWord,
-                          hintText: AppStrings.passWord,
-                          icon: const Icon(Icons.lock),
-                          suffixIcon: true,
-                          prefixIcon: true,
-                          obscureText: true,
-                          validator: true,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Column(
-                  children: [
-                    MaterialButton(
-                      elevation: 10,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 200),
+              child: Column(
+                spacing: 16,
+                children: [
+                  SvgPicture.asset(''),
+                  const Text(
+                    AppStrings.signIn,
+                    style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.w500,
                       color: AppColors.primaryColor,
-                      shape: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide.none),
-                      height: 40,
-                      minWidth: 200,
-                      child: state is SignInLoading
-                          ? const CircularProgressIndicator(
-                              color: Colors.white,
-                            )
-                          : const Text(AppStrings.signIn,
-                              textAlign: TextAlign.right,
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.white)),
-                      onPressed: () {
-                        context.read<AuthCubit>().signIn();
-                      },
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50, vertical: 60),
+                    child: Form(
+                      key: signinKey,
+                      child: Column(
+                        spacing: 16,
+                        children: [
+                          CustomInputField(
+                            primaryColor: AppColors.primaryColor,
+                            controller: userName,
+                            hintText: AppStrings.userName,
+                            icon: const Icon(Icons.person),
+                            suffixIcon: true,
+                            validator: true,
+                          ),
+                          CustomInputField(
+                            primaryColor: AppColors.primaryColor,
+                            controller: passWord,
+                            hintText: AppStrings.passWord,
+                            icon: const Icon(Icons.lock),
+                            suffixIcon: true,
+                            prefixIcon: true,
+                            obscureText: true,
+                            validator: true,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      MaterialButton(
+                        elevation: 10,
+                        color: AppColors.primaryColor,
+                        shape: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide.none),
+                        height: 40,
+                        minWidth: 200,
+                        child: state is SignInLoading
+                            ? const CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : const Text(AppStrings.signIn,
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.white)),
+                        onPressed: () {
+                          context.read<AuthCubit>().signIn();
+                        },
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                              child: const Text(
+                                'تسجيل الاشتراك',
+                                style: TextStyle(color: AppColors.primaryColor),
+                              ),
+                              onPressed: () {
+                                Navigator.pushReplacementNamed(
+                                    context, 'signup');
+                              }),
+                          const Text(
+                            AppStrings.newUser,
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );

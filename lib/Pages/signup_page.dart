@@ -7,14 +7,14 @@ import '/Cubits/auth_cubit/auth_cubit.dart';
 
 import '../Widgets/custom_inputfield.dart';
 
-class SignupPage extends StatefulWidget {
-  const SignupPage({super.key});
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  State<SignupPage> createState() => _SignupPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _SignUpPageState extends State<SignUpPage> {
   TextEditingController? userName;
 
   TextEditingController? passWord;
@@ -64,68 +64,94 @@ class _SignupPageState extends State<SignupPage> {
           body: SingleChildScrollView(
             child: Form(
               key: signUpKey,
-              child: Column(
-                children: [
-                  SvgPicture.asset(''),
-                  const Text(
-                    AppStrings.signUp,
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.primaryColor,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 200),
+                child: Column(
+                  spacing: 16,
+                  children: [
+                    SvgPicture.asset(''),
+                    const Text(
+                      AppStrings.signUp,
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.primaryColor,
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 40),
-                    child: Column(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 40),
+                      child: Column(
+                        spacing: 16,
+                        children: [
+                          CustomInputField(
+                            primaryColor: AppColors.primaryColor,
+                            controller: userName,
+                            hintText: AppStrings.userName,
+                            icon: const Icon(Icons.person),
+                            suffixIcon: true,
+                          ),
+                          CustomInputField(
+                            primaryColor: AppColors.primaryColor,
+                            controller: phoneNum,
+                            hintText: AppStrings.phoneNum,
+                            icon: const Icon(Icons.phone),
+                            suffixIcon: true,
+                          ),
+                          CustomInputField(
+                            primaryColor: AppColors.primaryColor,
+                            controller: passWord,
+                            hintText: AppStrings.passWord,
+                            obscureText: true,
+                            icon: const Icon(Icons.lock),
+                            prefixIcon: true,
+                            suffixIcon: true,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
                       children: [
-                        CustomInputField(
-                          primaryColor: AppColors.primaryColor,
-                          controller: userName,
-                          hintText: AppStrings.userName,
-                          icon: const Icon(Icons.person),
-                          suffixIcon: true,
+                        MaterialButton(
+                          elevation: 10,
+                          color: AppColors.primaryColor,
+                          shape: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide.none),
+                          height: 40,
+                          minWidth: 200,
+                          child: state is SignUpLoading
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : const Text(AppStrings.signUp,
+                                  style: TextStyle(
+                                      fontSize: 20, color: Colors.white)),
+                          onPressed: () {},
                         ),
-                        CustomInputField(
-                          primaryColor: AppColors.primaryColor,
-                          controller: phoneNum,
-                          hintText: AppStrings.phoneNum,
-                          icon: const Icon(Icons.phone),
-                          suffixIcon: true,
-                        ),
-                        CustomInputField(
-                          primaryColor: AppColors.primaryColor,
-                          controller: passWord,
-                          hintText: AppStrings.passWord,
-                          icon: const Icon(Icons.lock),
-                          suffixIcon: true,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TextButton(
+                              child: const Text(
+                                'تسجيل الدخول',
+                                style: TextStyle(color: AppColors.primaryColor),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pushReplacementNamed('signin');
+                              },
+                            ),
+                            const Text(
+                              AppStrings.oldUser,
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ),
-                  Column(
-                    children: [
-                      MaterialButton(
-                        elevation: 10,
-                        color: AppColors.primaryColor,
-                        shape: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide.none),
-                        height: 40,
-                        minWidth: 200,
-                        child: state is SignUpLoading
-                            ? const CircularProgressIndicator(
-                                color: Colors.white,
-                              )
-                            : const Text(AppStrings.signUp,
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.white)),
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

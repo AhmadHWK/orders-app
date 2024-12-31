@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
-
-import 'Pages/signin_page.dart';
+import '/Pages/splash_page.dart';
+import '/routes/approute.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp(
+    appRoute: AppRoute(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final AppRoute appRoute;
+  const MyApp({super.key, required this.appRoute});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      home: SignInPage(),
+      theme: ThemeData(fontFamily: 'Cairo'),
+      title: 'Oreders App',
+      debugShowCheckedModeBanner: false,
+      onGenerateRoute: appRoute.generateroute,
+      home: SplashPage(),
     );
   }
 }

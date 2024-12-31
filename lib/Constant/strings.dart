@@ -4,4 +4,6 @@ class AppStrings {
   static const String userName = 'اسم المستخدم';
   static const String signUp = 'تسجيل اشتراك';
   static const String signIn = 'تسجيل الدخول';
+  static const String newUser = 'مستخدم جديد ؟';
+  static const String oldUser = 'مستخدم جديد ؟';
 }
