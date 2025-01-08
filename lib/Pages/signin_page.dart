@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '/Constant/strings.dart';
+import 'package:programming_languages_project/Widgets/custom_button.dart';
+import 'package:programming_languages_project/Widgets/show_custom_toast.dart';
+import '../core/Constant/strings.dart';
 import '/Cubits/auth_cubit/auth_cubit.dart';
 
-import '../Constant/colors.dart';
+import '../core/Constant/colors.dart';
 import '../Widgets/custom_inputfield.dart';
 
 class SignInPage extends StatefulWidget {
@@ -15,12 +17,12 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  TextEditingController? userName;
+  TextEditingController? phoneNum;
   TextEditingController? passWord;
   GlobalKey<FormState>? signinKey;
   @override
   void initState() {
-    userName = TextEditingController();
+    phoneNum = TextEditingController();
     passWord = TextEditingController();
     signinKey = GlobalKey();
     super.initState();
@@ -28,7 +30,7 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   void dispose() {
-    userName?.dispose();
+    phoneNum?.dispose();
     passWord?.dispose();
     super.dispose();
   }
@@ -38,27 +40,28 @@ class _SignInPageState extends State<SignInPage> {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is SignInSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(''),
-          ));
-          Navigator.pushNamedAndRemoveUntil(context, '', (route) => false);
+          showCustomToast(message: state.message);
+          Navigator.pushNamedAndRemoveUntil(
+              context, 'homepage', (route) => false);
         } else if (state is SignInFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(''),
-            ),
-          );
+          showCustomToast(message: state.errMessage);
         }
       },
       builder: (context, state) {
+        final size = MediaQuery.of(context).size;
         return Scaffold(
           body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 200),
+            child: SizedBox(
+              height: size.height,
               child: Column(
-                spacing: 16,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: 10,
                 children: [
-                  SvgPicture.asset(''),
+                  SvgPicture.asset(
+                    'assets/svg/Tablet login-amico.svg',
+                    height: size.height / 3,
+                  ),
                   const Text(
                     AppStrings.signIn,
                     style: TextStyle(
@@ -68,8 +71,7 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 60),
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
                     child: Form(
                       key: signinKey,
                       child: Column(
@@ -77,11 +79,12 @@ class _SignInPageState extends State<SignInPage> {
                         children: [
                           CustomInputField(
                             primaryColor: AppColors.primaryColor,
-                            controller: userName,
-                            hintText: AppStrings.userName,
-                            icon: const Icon(Icons.person),
+                            controller: phoneNum,
+                            hintText: AppStrings.phoneNum,
+                            icon: const Icon(Icons.phone),
                             suffixIcon: true,
                             validator: true,
+                            isPhone: true,
                           ),
                           CustomInputField(
                             primaryColor: AppColors.primaryColor,
@@ -99,24 +102,27 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   Column(
                     children: [
-                      MaterialButton(
-                        elevation: 10,
-                        color: AppColors.primaryColor,
-                        shape: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide.none),
-                        height: 40,
-                        minWidth: 200,
+                      CustomButton(
+                        primaryColor: AppColors.primaryColor,
                         child: state is SignInLoading
                             ? const CircularProgressIndicator(
                                 color: Colors.white,
                               )
-                            : const Text(AppStrings.signIn,
-                                textAlign: TextAlign.right,
+                            : const Text(
+                                AppStrings.signIn,
                                 style: TextStyle(
-                                    fontSize: 20, color: Colors.white)),
+                                    color: Colors.white, fontSize: 20),
+                              ),
                         onPressed: () {
-                          context.read<AuthCubit>().signIn();
+                          if (signinKey!.currentState!.validate()) {
+                            context.read<AuthCubit>().signIn({
+                              'phone_number': phoneNum!.text,
+                              'password': passWord!.text,
+                            });
+                          } else {
+                            showCustomToast(
+                                message: AppStrings.validFieldsMessage);
+                          }
                         },
                       ),
                       Row(
@@ -124,12 +130,15 @@ class _SignInPageState extends State<SignInPage> {
                         children: [
                           TextButton(
                               child: const Text(
-                                'تسجيل الاشتراك',
+                                AppStrings.signUp,
                                 style: TextStyle(color: AppColors.primaryColor),
                               ),
                               onPressed: () {
-                                Navigator.pushReplacementNamed(
-                                    context, 'signup');
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  'signup',
+                                  (route) => false,
+                                );
                               }),
                           const Text(
                             AppStrings.newUser,

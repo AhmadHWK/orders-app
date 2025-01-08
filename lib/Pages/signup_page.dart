@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import '/Constant/colors.dart';
-import '/Constant/strings.dart';
+import 'package:programming_languages_project/Widgets/custom_button.dart';
+import 'package:programming_languages_project/Widgets/pick_image_widget.dart';
+import 'package:programming_languages_project/Widgets/show_custom_toast.dart';
+import '../core/Constant/colors.dart';
+import '../core/Constant/strings.dart';
 import '/Cubits/auth_cubit/auth_cubit.dart';
 
 import '../Widgets/custom_inputfield.dart';
@@ -15,26 +17,32 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  TextEditingController? userName;
+  TextEditingController? firstName;
+  TextEditingController? lastName;
 
   TextEditingController? passWord;
   TextEditingController? phoneNum;
+  TextEditingController? position;
 
   GlobalKey<FormState>? signUpKey;
   @override
   void initState() {
-    userName = TextEditingController();
+    firstName = TextEditingController();
+    lastName = TextEditingController();
     passWord = TextEditingController();
     phoneNum = TextEditingController();
+    position = TextEditingController();
     signUpKey = GlobalKey();
     super.initState();
   }
 
   @override
   void dispose() {
-    userName?.dispose();
+    firstName?.dispose();
+    lastName?.dispose();
     passWord?.dispose();
     phoneNum?.dispose();
+    position?.dispose();
     super.dispose();
   }
 
@@ -43,11 +51,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is SignUpSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(''),
-            ),
-          );
+          showCustomToast(message: state.message);
 
           Navigator.pushNamedAndRemoveUntil(
             context,
@@ -55,21 +59,23 @@ class _SignUpPageState extends State<SignUpPage> {
             (route) => false,
           );
         } else if (state is SignUpFailure) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('')));
+          showCustomToast(message: state.errMessage);
         }
       },
       builder: (context, state) {
+        final size = MediaQuery.of(context).size;
         return Scaffold(
           body: SingleChildScrollView(
-            child: Form(
-              key: signUpKey,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 200),
+            child: SizedBox(
+              height: size.height,
+              child: Form(
+                key: signUpKey,
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   spacing: 16,
                   children: [
-                    SvgPicture.asset(''),
+                    PickImageWidget(),
                     const Text(
                       AppStrings.signUp,
                       style: TextStyle(
@@ -79,17 +85,25 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 50, vertical: 40),
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: Column(
                         spacing: 16,
                         children: [
                           CustomInputField(
                             primaryColor: AppColors.primaryColor,
-                            controller: userName,
-                            hintText: AppStrings.userName,
+                            controller: firstName,
+                            hintText: AppStrings.firstName,
                             icon: const Icon(Icons.person),
                             suffixIcon: true,
+                            validator: true,
+                          ),
+                          CustomInputField(
+                            primaryColor: AppColors.primaryColor,
+                            controller: lastName,
+                            hintText: AppStrings.lastName,
+                            icon: const Icon(Icons.person),
+                            suffixIcon: true,
+                            validator: true,
                           ),
                           CustomInputField(
                             primaryColor: AppColors.primaryColor,
@@ -97,6 +111,8 @@ class _SignUpPageState extends State<SignUpPage> {
                             hintText: AppStrings.phoneNum,
                             icon: const Icon(Icons.phone),
                             suffixIcon: true,
+                            validator: true,
+                            isPhone: true,
                           ),
                           CustomInputField(
                             primaryColor: AppColors.primaryColor,
@@ -106,35 +122,54 @@ class _SignUpPageState extends State<SignUpPage> {
                             icon: const Icon(Icons.lock),
                             prefixIcon: true,
                             suffixIcon: true,
+                            validator: true,
+                          ),
+                          CustomInputField(
+                            primaryColor: AppColors.primaryColor,
+                            controller: position,
+                            hintText: AppStrings.position,
+                            icon: const Icon(Icons.location_on_rounded),
+                            suffixIcon: true,
+                            validator: true,
                           ),
                         ],
                       ),
                     ),
                     Column(
                       children: [
-                        MaterialButton(
-                          elevation: 10,
-                          color: AppColors.primaryColor,
-                          shape: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide.none),
-                          height: 40,
-                          minWidth: 200,
+                        CustomButton(
+                          primaryColor: AppColors.primaryColor,
                           child: state is SignUpLoading
-                              ? const CircularProgressIndicator(
+                              ? CircularProgressIndicator(
                                   color: Colors.white,
                                 )
-                              : const Text(AppStrings.signUp,
+                              : Text(
+                                  AppStrings.signUp,
                                   style: TextStyle(
-                                      fontSize: 20, color: Colors.white)),
-                          onPressed: () {},
+                                      color: Colors.white, fontSize: 20),
+                                ),
+                          onPressed: () {
+                            if (signUpKey!.currentState!.validate()) {
+                              context.read<AuthCubit>().register({
+                                'first_name': firstName!.text,
+                                'last_name': lastName!.text,
+                                'phone_number': phoneNum!.text,
+                                'password': passWord!.text,
+                                'image': context.read<AuthCubit>().profilePic,
+                                'position': position!.text
+                              });
+                            } else {
+                              showCustomToast(
+                                  message: AppStrings.validFieldsMessage);
+                            }
+                          },
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             TextButton(
                               child: const Text(
-                                'تسجيل الدخول',
+                                AppStrings.signIn,
                                 style: TextStyle(color: AppColors.primaryColor),
                               ),
                               onPressed: () {

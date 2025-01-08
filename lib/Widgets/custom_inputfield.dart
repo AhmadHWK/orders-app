@@ -4,22 +4,25 @@ class CustomInputField extends StatefulWidget {
   final Color primaryColor;
   final String hintText;
   final Icon icon;
+  final bool isPhone;
   final bool suffixIcon;
   final bool prefixIcon;
   final bool obscureText;
   final bool validator;
   final TextEditingController? controller;
 
-  const CustomInputField(
-      {super.key,
-      required this.hintText,
-      this.suffixIcon = false,
-      this.obscureText = false,
-      this.controller,
-      this.prefixIcon = false,
-      required this.icon,
-      this.validator = false,
-      required this.primaryColor});
+  const CustomInputField({
+    super.key,
+    this.isPhone = false,
+    required this.hintText,
+    this.suffixIcon = false,
+    this.obscureText = false,
+    this.controller,
+    this.prefixIcon = false,
+    required this.icon,
+    this.validator = false,
+    required this.primaryColor,
+  });
 
   @override
   State<CustomInputField> createState() => _CustomInputFieldState();
@@ -30,6 +33,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      keyboardType: widget.isPhone ? TextInputType.number : TextInputType.text,
       textAlign: TextAlign.end,
       obscureText: (widget.obscureText && _obscureText),
       decoration: InputDecoration(
@@ -62,6 +66,9 @@ class _CustomInputFieldState extends State<CustomInputField> {
       validator: (textValue) {
         if (textValue == null || textValue.isEmpty) {
           return 'الحقل فارغ';
+        }
+        if (widget.isPhone && textValue.length < 10) {
+          return 'يجب إدخال 10 أرقام';
         }
         return null;
       },
